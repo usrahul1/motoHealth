@@ -1,0 +1,28 @@
+{
+	"name": "backend",
+	"version": "1.0.0",
+	"description": "backend for motohealth -- a website to find out maintenance index for cars",
+	"main": "index.js",
+	"scripts": {
+		"start": "node build/index.js",
+		"dev": "tsc-watch --onSuccess \"npm start \""
+	},
+	"author": "",
+	"license": "ISC",
+	"devDependencies": {
+		"@types/dotenv": "^8.2.3",
+		"@types/express": "^5.0.1",
+		"@types/node": "^22.15.18",
+		"prisma": "^6.8.2",
+		"ts-node": "^10.9.2",
+		"tsc-watch": "^6.2.1",
+		"typescript": "^5.8.3"
+	},
+	"dependencies": {
+		"@apollo/server": "^4.12.1",
+		"@prisma/client": "^6.8.1",
+		"dotenv": "^16.5.0",
+		"express": "^5.1.0",
+		"graphql": "^16.11.0"
+	}
+}
