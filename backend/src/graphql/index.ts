@@ -2,7 +2,9 @@ import { ApolloServer } from "@apollo/server";
 
 async function createGraphQLServer() {
 	const gqlServer = new ApolloServer({
-		typeDefs: ``,
+		typeDefs: `
+
+		`,
 		resolvers: {},
 	});
 

@@ -16,5 +16,15 @@ datasource db {
 }
 
 model Vehicle {
-  
+  id           String   @id @default(uuid())
+  motorBrand   String
+  model        String
+  year         Int
+  mileage      Int
+
+  service      Float    
+  parts        Float  
+  fuel         Float 
+  insurance    Float    
+  safety       Float    
 }
