@@ -1,14 +1,15 @@
 export const typeDefs = `#graphql
   type Vehicle {
     id: ID!
-    motorBrand: String!
+    brand: String!
     model: String!
     year: Int!
     mileage: Int!
+    isElectric: Boolean!
     service: Float!
     parts: Float!
-    fuel: Float!
     insurance: Float!
     safety: Float!
+    fuelTankCapacity: Float
   }
 `;
