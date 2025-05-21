@@ -145,28 +145,6 @@ export default function VehicleDetails({ vehicleId }) {
 							<Car className="h-6 w-6" />
 							{vehicle.year} {vehicle.make} {vehicle.model}
 						</h2>
-						<div className="mt-4 grid grid-cols-2 gap-4">
-							<div className="flex flex-col">
-								<span className="text-slate-400 text-sm">Status</span>
-								<span className="text-white font-medium">{vehicle.status}</span>
-							</div>
-							<div className="flex flex-col">
-								<span className="text-slate-400 text-sm">Last Service</span>
-								<span className="text-white font-medium">
-									{vehicle.lastService}
-								</span>
-							</div>
-							<div className="flex flex-col">
-								<span className="text-slate-400 text-sm">VIN</span>
-								<span className="text-white font-medium">{vehicle.vin}</span>
-							</div>
-							<div className="flex flex-col">
-								<span className="text-slate-400 text-sm">License Plate</span>
-								<span className="text-white font-medium">
-									{vehicle.licensePlate}
-								</span>
-							</div>
-						</div>
 					</div>
 				</div>
 
@@ -241,107 +219,14 @@ export default function VehicleDetails({ vehicleId }) {
 							</div>
 						</CardContent>
 					</Card>
-
-					{/* Alerts */}
-					{vehicle.alerts && vehicle.alerts.length > 0 && (
-						<Card className="border-orange-500 bg-orange-500/10">
-							<CardHeader className="pb-2">
-								<CardTitle className="text-orange-500 flex items-center gap-2">
-									<AlertTriangle className="h-5 w-5" />
-									Alerts
-								</CardTitle>
-							</CardHeader>
-							<CardContent>
-								<ul className="space-y-2">
-									{vehicle.alerts.map((alert, index) => (
-										<li key={index} className="flex items-start gap-2">
-											<AlertTriangle
-												className={`h-5 w-5 mt-0.5 ${
-													alert.severity === "high"
-														? "text-red-500"
-														: alert.severity === "medium"
-														? "text-orange-500"
-														: alert.severity === "low"
-														? "text-yellow-500"
-														: "text-blue-500"
-												}`}
-											/>
-											<div>
-												<p className="font-medium">{alert.message}</p>
-												<p className="text-sm text-muted-foreground">
-													{alert.date}
-												</p>
-											</div>
-										</li>
-									))}
-								</ul>
-							</CardContent>
-						</Card>
-					)}
 				</div>
 			</div>
 
 			{/* Tabs for Maintenance, Analytics, Documents */}
 			<Tabs defaultValue="maintenance" className="w-full">
 				<TabsList className="grid w-full grid-cols-3 mb-6">
-					<TabsTrigger value="maintenance">Maintenance History</TabsTrigger>
 					<TabsTrigger value="analytics">Analytics</TabsTrigger>
-					<TabsTrigger value="documents">Documents</TabsTrigger>
 				</TabsList>
-
-				<TabsContent value="maintenance" className="space-y-4">
-					<Card>
-						<CardHeader>
-							<CardTitle className="flex items-center gap-2">
-								<Tool className="h-5 w-5" />
-								Maintenance History
-							</CardTitle>
-							<CardDescription>
-								View all maintenance records for your vehicle.
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="space-y-6">
-								{vehicle.maintenanceHistory.map((record, index) => (
-									<div
-										key={index}
-										className="border-b pb-4 last:border-0 last:pb-0"
-									>
-										<div className="flex justify-between items-start">
-											<div>
-												<h4 className="font-medium">{record.type}</h4>
-												<p className="text-sm text-muted-foreground">
-													{record.date}
-												</p>
-											</div>
-											<div className="text-right">
-												<span className="font-medium">${record.cost}</span>
-											</div>
-										</div>
-										<p className="mt-2 text-sm">{record.description}</p>
-									</div>
-								))}
-							</div>
-							<Button className="mt-6 w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-								Add Maintenance Record
-							</Button>
-						</CardContent>
-					</Card>
-
-					<Card>
-						<CardHeader>
-							<CardTitle>Maintenance Trends</CardTitle>
-							<CardDescription>
-								View maintenance costs and frequency over time.
-							</CardDescription>
-						</CardHeader>
-						<CardContent>
-							<div className="h-80">
-								<MaintenanceChart />
-							</div>
-						</CardContent>
-					</Card>
-				</TabsContent>
 
 				<TabsContent value="analytics" className="space-y-4">
 					<Card>
