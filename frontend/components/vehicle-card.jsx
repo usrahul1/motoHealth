@@ -20,9 +20,6 @@ export default function VehicleCard({ vehicle, showDetails = true }) {
 					alt={`${vehicle.make} ${vehicle.model}`}
 					className="w-full h-full object-cover"
 				/>
-				<div className="absolute top-2 right-2 bg-primary text-white text-xs font-bold px-2 py-1 rounded">
-					{vehicle.status}
-				</div>
 			</div>
 			<CardContent className="p-4">
 				<div className="flex items-center gap-2 mb-2">
@@ -62,14 +59,6 @@ export default function VehicleCard({ vehicle, showDetails = true }) {
 										: `${vehicle.fuelLevel}%`}
 								</span>
 							</div>
-							<Progress
-								value={
-									vehicle.batteryHealth !== undefined
-										? vehicle.batteryHealth
-										: vehicle.fuelLevel
-								}
-								className="h-1.5"
-							/>
 						</div>
 					)}
 				</div>

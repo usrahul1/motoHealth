@@ -131,7 +131,15 @@ exports.Prisma.VehicleScalarFieldEnum = {
   parts: 'parts',
   insurance: 'insurance',
   safety: 'safety',
-  fuelTankCapacity: 'fuelTankCapacity'
+  fuelTankCapacity: 'fuelTankCapacity',
+  batteryCapacity: 'batteryCapacity',
+  price: 'price'
+};
+
+exports.Prisma.UserVehiclesScalarFieldEnum = {
+  id: 'id',
+  userId: 'userId',
+  vehicleId: 'vehicleId'
 };
 
 exports.Prisma.SortOrder = {
@@ -151,7 +159,8 @@ exports.Prisma.NullsOrder = {
 
 
 exports.Prisma.ModelName = {
-  Vehicle: 'Vehicle'
+  Vehicle: 'Vehicle',
+  UserVehicles: 'UserVehicles'
 };
 
 /**

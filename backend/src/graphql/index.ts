@@ -4,10 +4,9 @@ import { Vehicle } from "./vehicles";
 async function createGraphQLServer() {
 	const gqlServer = new ApolloServer({
 		typeDefs: `
-        ${Vehicle.typeDefs}
+        	${Vehicle.typeDefs}
         type Query {
             ${Vehicle.queries}
-            hello: String
         }
         type Mutation {
             ${Vehicle.mutations}

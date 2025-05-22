@@ -11,5 +11,15 @@ export const typeDefs = `#graphql
     insurance: Float!
     safety: Float!
     fuelTankCapacity: Float
+    batteryCapacity: Float 
+    price: Float!
+  }
+
+
+
+  type UserVehicle {
+    id: ID!
+    userId: ID!
+    vehicle: Vehicle!
   }
 `;
