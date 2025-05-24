@@ -18,7 +18,7 @@ async function init() {
 	});
 	app.use(
 		cors({
-			origin: "http://localhost:3001",
+			origin: "https://moto-health.vercel.app/",
 			credentials: true,
 		})
 	);
