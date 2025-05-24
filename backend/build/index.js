@@ -16,6 +16,7 @@ const express_1 = __importDefault(require("express"));
 const express4_1 = require("@apollo/server/express4");
 const graphql_1 = __importDefault(require("./graphql"));
 const dotenv_1 = __importDefault(require("dotenv"));
+const cors_1 = __importDefault(require("cors"));
 dotenv_1.default.config();
 function init() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -27,6 +28,10 @@ function init() {
                 message: "server started bro",
             });
         });
+        app.use((0, cors_1.default)({
+            origin: "http://localhost:3001",
+            credentials: true,
+        }));
         const gqlServer = yield (0, graphql_1.default)();
         app.use("/graphql", (0, express4_1.expressMiddleware)(gqlServer));
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

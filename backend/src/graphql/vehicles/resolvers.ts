@@ -6,10 +6,6 @@ type VehicleArgs = {
 };
 
 const queries = {
-	// allVehicles: async (_, { limit, offset }, { dataSources }) => {
-	// 	return dataSources.vehicleAPI.getAllVehicles({ limit, offset });
-	// },
-
 	vehicleByBrandAndModel: async (_: any, args: VehicleArgs) => {
 		return await APIService.getVehicleByBrandAndModel(args.brand, args.model);
 	},
@@ -24,6 +20,18 @@ const queries = {
 
 	userVehicleCount: async (_: any, { userId }: { userId: string }) => {
 		return await APIService.getUserVehicleCount(userId);
+	},
+
+	allVehicleBrands: async () => {
+		return await APIService.getAllVehicleBrands();
+	},
+
+	allVehicles: async () => {
+		return await APIService.getAllVehicles();
+	},
+
+	vehicleById: async (_: any, { id }: { id: string }) => {
+		return await APIService.getVehicleById(id);
 	},
 };
 

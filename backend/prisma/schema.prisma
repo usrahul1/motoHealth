@@ -6,9 +6,9 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../src/generated/prisma"
 }
 
+  // output   = "../src/generated/prisma"
 
 datasource db {
   provider  = "postgresql"
@@ -30,9 +30,12 @@ model Vehicle {
   fuelTankCapacity Float?
   batteryCapacity  Float?  
   price            Float
-  
+
+  imageUrl         String?         
+
   userVehicles     UserVehicles[]
 }
+
 
 
 model UserVehicles {

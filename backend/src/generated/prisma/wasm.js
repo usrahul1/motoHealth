@@ -133,7 +133,8 @@ exports.Prisma.VehicleScalarFieldEnum = {
   safety: 'safety',
   fuelTankCapacity: 'fuelTankCapacity',
   batteryCapacity: 'batteryCapacity',
-  price: 'price'
+  price: 'price',
+  imageUrl: 'imageUrl'
 };
 
 exports.Prisma.UserVehiclesScalarFieldEnum = {

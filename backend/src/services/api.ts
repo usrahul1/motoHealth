@@ -48,6 +48,27 @@ class APIService {
 		});
 		return count;
 	}
+
+	public static async getAllVehicleBrands() {
+		const brands = await prismaClient.vehicle.findMany({
+			distinct: ["brand"],
+			select: { brand: true },
+		});
+		return brands.map((b) => b.brand);
+	}
+
+	public static async getAllVehicles() {
+		return await prismaClient.vehicle.findMany();
+	}
+
+	public static async getVehicleById(id: string) {
+		const vehicle = await prismaClient.vehicle.findUnique({
+			where: {
+				id: id,
+			},
+		});
+		return vehicle;
+	}
 }
 
 export default APIService;

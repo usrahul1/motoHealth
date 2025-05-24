@@ -1040,6 +1040,7 @@ export namespace Prisma {
     fuelTankCapacity: number | null
     batteryCapacity: number | null
     price: number | null
+    imageUrl: string | null
   }
 
   export type VehicleMaxAggregateOutputType = {
@@ -1056,6 +1057,7 @@ export namespace Prisma {
     fuelTankCapacity: number | null
     batteryCapacity: number | null
     price: number | null
+    imageUrl: string | null
   }
 
   export type VehicleCountAggregateOutputType = {
@@ -1072,6 +1074,7 @@ export namespace Prisma {
     fuelTankCapacity: number
     batteryCapacity: number
     price: number
+    imageUrl: number
     _all: number
   }
 
@@ -1114,6 +1117,7 @@ export namespace Prisma {
     fuelTankCapacity?: true
     batteryCapacity?: true
     price?: true
+    imageUrl?: true
   }
 
   export type VehicleMaxAggregateInputType = {
@@ -1130,6 +1134,7 @@ export namespace Prisma {
     fuelTankCapacity?: true
     batteryCapacity?: true
     price?: true
+    imageUrl?: true
   }
 
   export type VehicleCountAggregateInputType = {
@@ -1146,6 +1151,7 @@ export namespace Prisma {
     fuelTankCapacity?: true
     batteryCapacity?: true
     price?: true
+    imageUrl?: true
     _all?: true
   }
 
@@ -1249,6 +1255,7 @@ export namespace Prisma {
     fuelTankCapacity: number | null
     batteryCapacity: number | null
     price: number
+    imageUrl: string | null
     _count: VehicleCountAggregateOutputType | null
     _avg: VehicleAvgAggregateOutputType | null
     _sum: VehicleSumAggregateOutputType | null
@@ -1284,6 +1291,7 @@ export namespace Prisma {
     fuelTankCapacity?: boolean
     batteryCapacity?: boolean
     price?: boolean
+    imageUrl?: boolean
     userVehicles?: boolean | Vehicle$userVehiclesArgs<ExtArgs>
     _count?: boolean | VehicleCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["vehicle"]>
@@ -1302,6 +1310,7 @@ export namespace Prisma {
     fuelTankCapacity?: boolean
     batteryCapacity?: boolean
     price?: boolean
+    imageUrl?: boolean
   }, ExtArgs["result"]["vehicle"]>
 
   export type VehicleSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
@@ -1318,6 +1327,7 @@ export namespace Prisma {
     fuelTankCapacity?: boolean
     batteryCapacity?: boolean
     price?: boolean
+    imageUrl?: boolean
   }, ExtArgs["result"]["vehicle"]>
 
   export type VehicleSelectScalar = {
@@ -1334,9 +1344,10 @@ export namespace Prisma {
     fuelTankCapacity?: boolean
     batteryCapacity?: boolean
     price?: boolean
+    imageUrl?: boolean
   }
 
-  export type VehicleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brand" | "model" | "year" | "mileage" | "isElectric" | "service" | "parts" | "insurance" | "safety" | "fuelTankCapacity" | "batteryCapacity" | "price", ExtArgs["result"]["vehicle"]>
+  export type VehicleOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "brand" | "model" | "year" | "mileage" | "isElectric" | "service" | "parts" | "insurance" | "safety" | "fuelTankCapacity" | "batteryCapacity" | "price" | "imageUrl", ExtArgs["result"]["vehicle"]>
   export type VehicleInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     userVehicles?: boolean | Vehicle$userVehiclesArgs<ExtArgs>
     _count?: boolean | VehicleCountOutputTypeDefaultArgs<ExtArgs>
@@ -1363,6 +1374,7 @@ export namespace Prisma {
       fuelTankCapacity: number | null
       batteryCapacity: number | null
       price: number
+      imageUrl: string | null
     }, ExtArgs["result"]["vehicle"]>
     composites: {}
   }
@@ -1800,6 +1812,7 @@ export namespace Prisma {
     readonly fuelTankCapacity: FieldRef<"Vehicle", 'Float'>
     readonly batteryCapacity: FieldRef<"Vehicle", 'Float'>
     readonly price: FieldRef<"Vehicle", 'Float'>
+    readonly imageUrl: FieldRef<"Vehicle", 'String'>
   }
     
 
@@ -3289,7 +3302,8 @@ export namespace Prisma {
     safety: 'safety',
     fuelTankCapacity: 'fuelTankCapacity',
     batteryCapacity: 'batteryCapacity',
-    price: 'price'
+    price: 'price',
+    imageUrl: 'imageUrl'
   };
 
   export type VehicleScalarFieldEnum = (typeof VehicleScalarFieldEnum)[keyof typeof VehicleScalarFieldEnum]
@@ -3402,6 +3416,7 @@ export namespace Prisma {
     fuelTankCapacity?: FloatNullableFilter<"Vehicle"> | number | null
     batteryCapacity?: FloatNullableFilter<"Vehicle"> | number | null
     price?: FloatFilter<"Vehicle"> | number
+    imageUrl?: StringNullableFilter<"Vehicle"> | string | null
     userVehicles?: UserVehiclesListRelationFilter
   }
 
@@ -3419,6 +3434,7 @@ export namespace Prisma {
     fuelTankCapacity?: SortOrderInput | SortOrder
     batteryCapacity?: SortOrderInput | SortOrder
     price?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
     userVehicles?: UserVehiclesOrderByRelationAggregateInput
   }
 
@@ -3439,6 +3455,7 @@ export namespace Prisma {
     fuelTankCapacity?: FloatNullableFilter<"Vehicle"> | number | null
     batteryCapacity?: FloatNullableFilter<"Vehicle"> | number | null
     price?: FloatFilter<"Vehicle"> | number
+    imageUrl?: StringNullableFilter<"Vehicle"> | string | null
     userVehicles?: UserVehiclesListRelationFilter
   }, "id">
 
@@ -3456,6 +3473,7 @@ export namespace Prisma {
     fuelTankCapacity?: SortOrderInput | SortOrder
     batteryCapacity?: SortOrderInput | SortOrder
     price?: SortOrder
+    imageUrl?: SortOrderInput | SortOrder
     _count?: VehicleCountOrderByAggregateInput
     _avg?: VehicleAvgOrderByAggregateInput
     _max?: VehicleMaxOrderByAggregateInput
@@ -3480,6 +3498,7 @@ export namespace Prisma {
     fuelTankCapacity?: FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
     batteryCapacity?: FloatNullableWithAggregatesFilter<"Vehicle"> | number | null
     price?: FloatWithAggregatesFilter<"Vehicle"> | number
+    imageUrl?: StringNullableWithAggregatesFilter<"Vehicle"> | string | null
   }
 
   export type UserVehiclesWhereInput = {
@@ -3542,6 +3561,7 @@ export namespace Prisma {
     fuelTankCapacity?: number | null
     batteryCapacity?: number | null
     price: number
+    imageUrl?: string | null
     userVehicles?: UserVehiclesCreateNestedManyWithoutVehicleInput
   }
 
@@ -3559,6 +3579,7 @@ export namespace Prisma {
     fuelTankCapacity?: number | null
     batteryCapacity?: number | null
     price: number
+    imageUrl?: string | null
     userVehicles?: UserVehiclesUncheckedCreateNestedManyWithoutVehicleInput
   }
 
@@ -3576,6 +3597,7 @@ export namespace Prisma {
     fuelTankCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     batteryCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     price?: FloatFieldUpdateOperationsInput | number
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     userVehicles?: UserVehiclesUpdateManyWithoutVehicleNestedInput
   }
 
@@ -3593,6 +3615,7 @@ export namespace Prisma {
     fuelTankCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     batteryCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     price?: FloatFieldUpdateOperationsInput | number
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
     userVehicles?: UserVehiclesUncheckedUpdateManyWithoutVehicleNestedInput
   }
 
@@ -3610,6 +3633,7 @@ export namespace Prisma {
     fuelTankCapacity?: number | null
     batteryCapacity?: number | null
     price: number
+    imageUrl?: string | null
   }
 
   export type VehicleUpdateManyMutationInput = {
@@ -3626,6 +3650,7 @@ export namespace Prisma {
     fuelTankCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     batteryCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     price?: FloatFieldUpdateOperationsInput | number
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VehicleUncheckedUpdateManyInput = {
@@ -3642,6 +3667,7 @@ export namespace Prisma {
     fuelTankCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     batteryCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     price?: FloatFieldUpdateOperationsInput | number
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserVehiclesCreateInput = {
@@ -3738,6 +3764,21 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type StringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type UserVehiclesListRelationFilter = {
     every?: UserVehiclesWhereInput
     some?: UserVehiclesWhereInput
@@ -3767,6 +3808,7 @@ export namespace Prisma {
     fuelTankCapacity?: SortOrder
     batteryCapacity?: SortOrder
     price?: SortOrder
+    imageUrl?: SortOrder
   }
 
   export type VehicleAvgOrderByAggregateInput = {
@@ -3795,6 +3837,7 @@ export namespace Prisma {
     fuelTankCapacity?: SortOrder
     batteryCapacity?: SortOrder
     price?: SortOrder
+    imageUrl?: SortOrder
   }
 
   export type VehicleMinOrderByAggregateInput = {
@@ -3811,6 +3854,7 @@ export namespace Prisma {
     fuelTankCapacity?: SortOrder
     batteryCapacity?: SortOrder
     price?: SortOrder
+    imageUrl?: SortOrder
   }
 
   export type VehicleSumOrderByAggregateInput = {
@@ -3899,6 +3943,24 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    mode?: QueryMode
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type VehicleScalarRelationFilter = {
     is?: VehicleWhereInput
     isNot?: VehicleWhereInput
@@ -3971,6 +4033,10 @@ export namespace Prisma {
     decrement?: number
     multiply?: number
     divide?: number
+  }
+
+  export type NullableStringFieldUpdateOperationsInput = {
+    set?: string | null
   }
 
   export type UserVehiclesUpdateManyWithoutVehicleNestedInput = {
@@ -4067,6 +4133,20 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedStringNullableFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableFilter<$PrismaModel> | string | null
+  }
+
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -4151,6 +4231,23 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: string | StringFieldRefInput<$PrismaModel> | null
+    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    lt?: string | StringFieldRefInput<$PrismaModel>
+    lte?: string | StringFieldRefInput<$PrismaModel>
+    gt?: string | StringFieldRefInput<$PrismaModel>
+    gte?: string | StringFieldRefInput<$PrismaModel>
+    contains?: string | StringFieldRefInput<$PrismaModel>
+    startsWith?: string | StringFieldRefInput<$PrismaModel>
+    endsWith?: string | StringFieldRefInput<$PrismaModel>
+    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedStringNullableFilter<$PrismaModel>
+    _max?: NestedStringNullableFilter<$PrismaModel>
+  }
+
   export type UserVehiclesCreateWithoutVehicleInput = {
     id?: string
     userId: string
@@ -4210,6 +4307,7 @@ export namespace Prisma {
     fuelTankCapacity?: number | null
     batteryCapacity?: number | null
     price: number
+    imageUrl?: string | null
   }
 
   export type VehicleUncheckedCreateWithoutUserVehiclesInput = {
@@ -4226,6 +4324,7 @@ export namespace Prisma {
     fuelTankCapacity?: number | null
     batteryCapacity?: number | null
     price: number
+    imageUrl?: string | null
   }
 
   export type VehicleCreateOrConnectWithoutUserVehiclesInput = {
@@ -4258,6 +4357,7 @@ export namespace Prisma {
     fuelTankCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     batteryCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     price?: FloatFieldUpdateOperationsInput | number
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type VehicleUncheckedUpdateWithoutUserVehiclesInput = {
@@ -4274,6 +4374,7 @@ export namespace Prisma {
     fuelTankCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     batteryCapacity?: NullableFloatFieldUpdateOperationsInput | number | null
     price?: FloatFieldUpdateOperationsInput | number
+    imageUrl?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UserVehiclesCreateManyVehicleInput = {

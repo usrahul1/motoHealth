@@ -30,6 +30,8 @@ model Vehicle {
   batteryCapacity  Float?
   price            Float
 
+  imageUrl String?
+
   userVehicles UserVehicles[]
 }
 
