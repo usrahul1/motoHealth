@@ -67,7 +67,9 @@ export const FirebaseProvider = ({ children }) => {
 					rawDate.split(", ")[1].split(" ")[1] +
 					" " +
 					rawDate.split(", ")[1].split(" ")[2];
+				console.log("user is ", user);
 				return {
+					id: user.uid,
 					name: user.displayName,
 					email: user.email,
 					photoURL: user.photoURL,

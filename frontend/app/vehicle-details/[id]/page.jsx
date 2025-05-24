@@ -1,5 +1,6 @@
 import VehicleDetails from "@/components/vehicle-details";
 
-export default function VehicleDetailsPage({ params }) {
-	return <VehicleDetails vehicleId={params.id} />;
+export default async function VehicleDetailsPage({ params }) {
+	const resolvedParams = await params;
+	return <VehicleDetails vehicleId={resolvedParams.id} />;
 }
