@@ -49,12 +49,13 @@ class APIService {
 		return count;
 	}
 
-	public static async getAllVehicleBrands() {
-		const brands = await prismaClient.vehicle.findMany({
-			distinct: ["brand"],
-			select: { brand: true },
-		});
-		return brands.map((b) => b.brand);
+	public static async getAllVehicleBrands(): Promise<(string | null)[]> {
+		const brands: { brand: string | null }[] =
+			await prismaClient.vehicle.findMany({
+				distinct: ["brand"],
+				select: { brand: true },
+			});
+		return brands.map((b: { brand: string | null }) => b.brand);
 	}
 
 	public static async getAllVehicles() {

@@ -6,7 +6,9 @@
 	"scripts": {
 		"start": "node build/index.js",
 		"dev": "tsc-watch --onSuccess \"npm start \"",
-		"build": "tsc"
+		"build": "tsc",
+		"prisma": "prisma generate",
+		"buildOne": "npm install && npm run build && npm run prisma"
 	},
 	"author": "",
 	"license": "ISC",
