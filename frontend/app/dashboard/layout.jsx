@@ -18,9 +18,7 @@ export default function DashboardLayout({ children }) {
 					</div>
 				</div>
 			</header>
-			<main className="flex-1 bg-gradient-to-b from-slate-900 to-slate-800 text-white">
-				{children}
-			</main>
+			<main className="flex-1">{children}</main>
 		</div>
 	);
 }

@@ -15,16 +15,20 @@ import VehicleCard from "./vehicle-card";
 import { Search, Filter, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { fetchAllVehicles } from "@/api/RequestMaker";
+import { fetchUserVehicles } from "@/api/RequestMaker";
+import { useFirebase } from "@/context/Firebase";
 
 export default function VehiclesContent() {
 	const router = useRouter();
+	const firebase = useFirebase();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filterMake, setFilterMake] = useState("All");
 	const [filterYear, setFilterYear] = useState("All");
-	const [filterStatus, setFilterStatus] = useState("All");
 	const [visibleVehicles, setVisibleVehicles] = useState(8);
 	const [allVehicles, setAllVehicles] = useState([]);
 	const [filteredVehicles, setFilteredVehicles] = useState([]);
+	const [userVehicles, setUserVehicles] = useState([]);
+	const [profile, setProfile] = useState(null);
 
 	useEffect(() => {
 		fetchAllVehicles().then(setAllVehicles);
@@ -33,6 +37,25 @@ export default function VehiclesContent() {
 	useEffect(() => {
 		setFilteredVehicles(allVehicles);
 	}, [allVehicles]);
+
+	useEffect(() => {
+		const details = firebase.profDetails();
+		if (details) {
+			console.log("details are: ", details);
+			setProfile(details);
+		}
+	}, [firebase]);
+
+	useEffect(() => {
+		const getVehicles = async () => {
+			const vehicles = await fetchUserVehicles(profile?.id);
+			setUserVehicles(vehicles);
+		};
+
+		if (profile?.id) {
+			getVehicles();
+		}
+	}, [profile?.id]);
 
 	useEffect(() => {
 		let result = allVehicles;
@@ -56,12 +79,8 @@ export default function VehiclesContent() {
 			);
 		}
 
-		if (filterStatus !== "All") {
-			result = result.filter((vehicle) => vehicle.status === filterStatus);
-		}
-
 		setFilteredVehicles(result);
-	}, [searchTerm, filterMake, filterYear, filterStatus]);
+	}, [searchTerm, filterMake, filterYear]);
 
 	const handleLoadMore = () => {
 		setVisibleVehicles((prev) => Math.min(prev + 8, filteredVehicles.length));
@@ -78,12 +97,6 @@ export default function VehiclesContent() {
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 				<h1 className="text-2xl font-bold">Vehicle Database</h1>
-				<Button
-					onClick={handleAddVehicle}
-					className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-				>
-					<Plus className="mr-2 h-4 w-4" /> Add Vehicle
-				</Button>
 			</div>
 
 			<div className="flex flex-col md:flex-row gap-4">
@@ -99,12 +112,16 @@ export default function VehiclesContent() {
 
 				<div className="flex flex-wrap gap-2">
 					<Select value={filterMake} onValueChange={setFilterMake}>
-						<SelectTrigger className="w-[130px]">
+						<SelectTrigger className="w-[130px] bg-base-100 border border-base-300 rounded-box shadow-sm">
 							<SelectValue placeholder="Make" />
 						</SelectTrigger>
-						<SelectContent>
+						<SelectContent className="card bg-base-100 rounded-box shadow-xl p-2">
 							{makes.map((make) => (
-								<SelectItem key={make} value={make}>
+								<SelectItem
+									key={make}
+									value={make}
+									className="hover:bg-base-200 rounded-md cursor-pointer"
+								>
 									{make}
 								</SelectItem>
 							))}
@@ -112,12 +129,16 @@ export default function VehiclesContent() {
 					</Select>
 
 					<Select value={filterYear} onValueChange={setFilterYear}>
-						<SelectTrigger className="w-[130px]">
+						<SelectTrigger className="w-[130px] bg-base-100 border border-base-300 rounded-box shadow-sm">
 							<SelectValue placeholder="Year" />
 						</SelectTrigger>
-						<SelectContent>
+						<SelectContent className="card bg-base-100 rounded-box shadow-xl p-2">
 							{years.map((year) => (
-								<SelectItem key={year} value={year.toString()}>
+								<SelectItem
+									key={year}
+									value={year.toString()}
+									className="hover:bg-base-200 rounded-md cursor-pointer"
+								>
 									{year}
 								</SelectItem>
 							))}
@@ -131,7 +152,6 @@ export default function VehiclesContent() {
 							setSearchTerm("");
 							setFilterMake("All");
 							setFilterYear("All");
-							setFilterStatus("All");
 						}}
 					>
 						<Filter className="h-4 w-4" />
@@ -140,16 +160,30 @@ export default function VehiclesContent() {
 			</div>
 
 			<Tabs defaultValue="grid" className="w-full">
-				<TabsList className="grid w-full max-w-[400px] grid-cols-2">
-					<TabsTrigger value="grid">Grid View</TabsTrigger>
-					<TabsTrigger value="table">Table View</TabsTrigger>
+				<TabsList className="grid w-full max-w-[400px] grid-cols-2 gap-2">
+					<TabsTrigger className="btn btn-primary" value="grid">
+						Grid View
+					</TabsTrigger>
+					<TabsTrigger className="btn btn-primary" value="table">
+						Table View
+					</TabsTrigger>
 				</TabsList>
 
 				<TabsContent value="grid" className="mt-6">
 					<div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-						{filteredVehicles.slice(0, visibleVehicles).map((vehicle) => (
-							<VehicleCard key={vehicle.id} vehicle={vehicle} />
-						))}
+						{filteredVehicles.slice(0, visibleVehicles).map((vehicle) => {
+							const isOwner = userVehicles.some(
+								(v) => v.vehicle.id === vehicle.id
+							);
+							console.log(isOwner);
+							return (
+								<VehicleCard
+									key={vehicle.id}
+									vehicle={vehicle}
+									isOwner={isOwner}
+								/>
+							);
+						})}
 					</div>
 
 					{visibleVehicles < filteredVehicles.length && (

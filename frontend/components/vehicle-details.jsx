@@ -52,7 +52,7 @@ export default function VehicleDetails({ vehicleId }) {
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex flex-col md:flex-row gap-6">
 				{/* Vehicle Image */}
-				<div className="w-full md:w-1/2 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-lg overflow-hidden">
+				<div className="w-full md:w-1/2 rounded-xl shadow-lg overflow-hidden">
 					<div className="relative h-64 md:h-80">
 						<img
 							src={
@@ -65,11 +65,11 @@ export default function VehicleDetails({ vehicleId }) {
 						/>
 					</div>
 					<div className="p-6">
-						<h2 className="text-2xl font-bold text-white flex items-center gap-2">
+						<h2 className="text-2xl font-bold  flex items-center gap-2">
 							<Car className="h-6 w-6" />
 							{vehicle.year}
 						</h2>
-						<h2 className="text-2xl font-bold text-white flex items-center gap-2">
+						<h2 className="text-2xl font-bold  flex items-center gap-2">
 							{vehicle.brand} {vehicle.model}
 						</h2>
 					</div>
@@ -77,7 +77,7 @@ export default function VehicleDetails({ vehicleId }) {
 
 				{/* Vehicle Stats */}
 				<div className="w-full md:w-1/2 space-y-4">
-					<Card className="bg-gradient-to-br from-slate-800 to-slate-900 border-none text-white">
+					<Card className="border-none ">
 						<CardHeader>
 							<CardTitle className="flex items-center gap-2">
 								<Gauge className="h-5 w-5" />
@@ -196,7 +196,7 @@ export default function VehicleDetails({ vehicleId }) {
 				</TabsList>
 
 				<TabsContent value="analytics" className="space-y-4">
-					<div className="border-2 border-white w-full">
+					<div>
 						<Card>
 							<CardHeader>
 								<CardTitle>Efficiency Metrics</CardTitle>

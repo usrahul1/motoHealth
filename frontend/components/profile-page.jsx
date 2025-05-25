@@ -13,11 +13,14 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useToast } from "@/components/ui/use-toast";
+// import { useToast } from "@/components/ui/use-toast";
+import { toast } from "react-hot-toast";
 import VehicleCard from "./vehicle-card";
 import { useRouter } from "next/navigation";
 import { useFirebase } from "@/context/Firebase";
 import avatar from "../public/images/profile-avatar.jpg";
+import { fetchUserVehicleCount } from "@/api/RequestMaker";
+import { fetchUserVehicleDetails } from "@/api/RequestMaker";
 
 const vehicles = [
 	{
@@ -59,100 +62,103 @@ const vehicles = [
 ];
 
 export default function ProfilePage() {
-	const { toast } = useToast();
 	const firebase = useFirebase();
 	const [profilePic, setProfilePic] = useState(avatar);
 	const [profile, setProfile] = useState(null);
 	const router = useRouter();
-	const [profileData, setProfileData] = useState({
-		name: "Alex Johnson",
-		email: "alex.johnson@example.com",
-		phone: "+1 (555) 123-4567",
-		address: "123 Main Street, San Francisco, CA 94105",
-		password: "••••••••",
-		notifications: true,
-		darkMode: true,
-		dataSharing: false,
-	});
+	const [name, setName] = useState("");
+	const [userVehiclesCount, setUserVehiclesCount] = useState(0);
+	const [userVehicles, setUserVehicles] = useState([]);
 
 	useEffect(() => {
 		const details = firebase.profDetails();
 		if (details) {
 			console.log("details are: ", details);
 			setProfile(details);
+			setName(details?.name);
 			if (details.photoURL != null) setProfilePic(details.photoURL);
 		}
 	}, [firebase]);
 
-	const handleInputChange = (e) => {
-		const { name, value, type, checked } = e.target;
-		setProfileData({
-			...profileData,
-			[name]: type === "checkbox" ? checked : value,
-		});
-	};
+	useEffect(() => {
+		const getUserVehicleCount = async () => {
+			if (profile?.id) {
+				try {
+					const count = await fetchUserVehicleCount(profile.id);
+					setUserVehiclesCount(count);
+				} catch (error) {
+					console.error("Error fetching user vehicle count:", error);
+				}
+			}
+		};
 
-	const handleSaveProfile = () => {
-		toast({
-			title: "Profile updated",
-			description: "Your profile information has been updated successfully.",
-		});
-	};
+		getUserVehicleCount();
+	}, [profile?.id]);
 
-	const handleSaveSettings = () => {
-		toast({
-			title: "Settings updated",
-			description: "Your account settings have been updated successfully.",
-		});
-	};
+	useEffect(() => {
+		const getUserVehicles = async () => {
+			if (!profile?.id) return;
 
-	const handleChangePassword = () => {
-		toast({
-			title: "Password changed",
-			description: "Your password has been changed successfully.",
-		});
-	};
+			const vehicles = await fetchUserVehicleDetails(profile?.id);
+			setUserVehicles(vehicles);
+		};
 
-	const handleAddVehicle = () => {
-		router.push("/dashboard/add-vehicle");
+		getUserVehicles();
+	}, [profile?.id]);
+
+	const handleSaveName = async () => {
+		try {
+			await firebase.updateUserName(name);
+			toast.success("Name updated successfully!");
+		} catch (err) {
+			console.log(err);
+			toast.error("Failed to update name.");
+		}
 	};
 
 	return (
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex flex-col md:flex-row gap-6 items-start">
-				<div className="w-full md:w-1/3 flex flex-col items-center p-6 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl shadow-lg">
-					<Avatar className="w-32 h-32 border-4 border-primary">
+				<div className="card w-full md:w-1/3 flex flex-col items-center p-6 rounded-xl shadow-lg bg-base-200 text-base-content">
+					<Avatar className="card-title w-32 h-32 border-4 border-primary">
 						<AvatarImage src={profilePic} alt="User" />
-						<AvatarFallback>AJ</AvatarFallback>
+						<AvatarFallback>User</AvatarFallback>
 					</Avatar>
-					<h2 className="mt-4 text-2xl font-bold text-white">
+					<h2 className="mt-4 text-2xl font-bold">
 						{profile?.name || "Loading..."}
 					</h2>
-					<p className="text-slate-300">{profile?.email || "Loading..."}</p>
+					<p>{profile?.email || "Loading..."}</p>
 					<div className="mt-6 w-full">
-						<div className="flex justify-between text-slate-300 mb-2">
+						<div className="flex justify-between mb-2">
 							<span>Member since</span>
-							<span>{profile?.createdAt || "Loading..."} </span>
+							<span>{profile?.createdAt || "Loading..."}</span>
 						</div>
-						<div className="flex justify-between text-slate-300 mb-2">
+						<div className="flex justify-between mb-2">
 							<span>Vehicles</span>
-							<span>{vehicles.length}</span>
+							<span>{userVehiclesCount}</span>
 						</div>
-						<div className="flex justify-between text-slate-300 mb-2">
+						<div className="flex justify-between mb-2">
 							<span>Last login</span>
-							<span>Today</span>
+							<span>{profile?.lastLoggedIn || "Loading..."}</span>
 						</div>
 					</div>
-					<Button className="mt-6 w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700">
-						Edit Profile Picture
-					</Button>
 				</div>
 
 				<div className="w-full md:w-2/3">
 					<Tabs defaultValue="profile" className="w-full">
-						<TabsList className="grid w-full grid-cols-3 mb-6">
-							<TabsTrigger value="profile">Profile</TabsTrigger>
-							<TabsTrigger value="vehicles">My Vehicles</TabsTrigger>
+						<TabsList className="grid w-full grid-cols-2 mb-6 bg-base-200 text-base-content rounded-xl shadow">
+							<TabsTrigger
+								value="profile"
+								className="py-2 px-4 data-[state=active]:bg-primary data-[state=active]:text-primary-content rounded-l-xl"
+							>
+								Profile
+							</TabsTrigger>
+							<TabsTrigger
+								value="vehicles"
+								className="py-2 px-4 data-[state=active]:bg-primary data-[state=active]:text-primary-content rounded-r-xl"
+							>
+								My Vehicles
+							</TabsTrigger>
 						</TabsList>
 
 						<TabsContent value="profile" className="space-y-4">
@@ -170,8 +176,8 @@ export default function ProfilePage() {
 											<Input
 												id="name"
 												name="name"
-												value={profile?.name || "Loading..."}
-												onChange={handleInputChange}
+												value={name}
+												onChange={(e) => setName(e.target.value)}
 											/>
 										</div>
 										<div className="space-y-2">
@@ -181,31 +187,13 @@ export default function ProfilePage() {
 												name="email"
 												type="email"
 												value={profile?.email || "Loading..."}
-												onChange={handleInputChange}
-											/>
-										</div>
-										<div className="space-y-2">
-											<Label htmlFor="phone">Phone</Label>
-											<Input
-												id="phone"
-												name="phone"
-												value={profile?.number || "Null"}
-												onChange={handleInputChange}
-											/>
-										</div>
-										<div className="space-y-2">
-											<Label htmlFor="address">Address</Label>
-											<Input
-												id="address"
-												name="address"
-												value={profile?.addr || "Null"}
-												onChange={handleInputChange}
+												readonly
 											/>
 										</div>
 									</div>
 									<Button
-										className="w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-										onClick={handleSaveProfile}
+										onClick={handleSaveName}
+										className="w-full md:w-auto btn btn-primary"
 									>
 										Save Changes
 									</Button>
@@ -223,20 +211,15 @@ export default function ProfilePage() {
 								</CardHeader>
 								<CardContent>
 									<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-										{vehicles.map((vehicle) => (
+										{userVehicles.map(({ vehicle }) => (
 											<VehicleCard
 												key={vehicle.id}
 												vehicle={vehicle}
 												showDetails={true}
+												isOwner={true}
 											/>
 										))}
 									</div>
-									<Button
-										className="mt-6 w-full md:w-auto bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-										onClick={handleAddVehicle}
-									>
-										Add New Vehicle
-									</Button>
 								</CardContent>
 							</Card>
 						</TabsContent>

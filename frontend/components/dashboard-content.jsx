@@ -24,22 +24,50 @@ import {
 import VehicleCard from "./vehicle-card";
 import MaintenanceChart from "./maintenance-chart";
 import CostTrendChart from "./cost-trend-chart";
-import { fetchAllVehicles } from "../api/RequestMaker";
 import { fetchUserVehicleCount } from "../api/RequestMaker";
+import { useFirebase } from "@/context/Firebase";
+import { fetchUserVehicleDetails } from "../api/RequestMaker";
 
 export default function DashboardContent() {
 	const router = useRouter();
+	const firebase = useFirebase();
 	const [activeTab, setActiveTab] = useState("overview");
-	const [vehicles, setVehicles] = useState([]);
-	const [userVehicles, setUserVehicles] = useState(0);
+	const [profile, setProfile] = useState(null);
+	const [userVehiclesCount, setUserVehiclesCount] = useState(0);
+	const [userVehicles, setUserVehicles] = useState([]);
 
 	useEffect(() => {
-		fetchAllVehicles().then(setVehicles);
-	}, []);
+		const details = firebase.profDetails();
+		if (details) {
+			setProfile(details);
+		}
+	}, [firebase]);
 
 	useEffect(() => {
-		fetchUserVehicleCount().then(setVehicles);
-	}, []);
+		const getUserVehicleCount = async () => {
+			if (profile?.id) {
+				try {
+					const count = await fetchUserVehicleCount(profile.id);
+					setUserVehiclesCount(count);
+				} catch (error) {
+					console.error("Error fetching user vehicle count:", error);
+				}
+			}
+		};
+
+		getUserVehicleCount();
+	}, [profile?.id]);
+
+	useEffect(() => {
+		const getUserVehicles = async () => {
+			if (!profile?.id) return;
+
+			const vehicles = await fetchUserVehicleDetails(profile?.id);
+			setUserVehicles(vehicles);
+		};
+
+		getUserVehicles();
+	}, [profile?.id]);
 
 	const handleViewAllVehicles = () => {
 		router.push("/dashboard/vehicles");
@@ -57,29 +85,19 @@ export default function DashboardContent() {
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
 				<h1 className="text-2xl font-bold">Dashboard</h1>
-				<div className="flex gap-2">
-					<Button
-						onClick={handleAddVehicle}
-						className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
-					>
-						<Plus className="mr-2 h-4 w-4" /> Add Vehicle
-					</Button>
-				</div>
 			</div>
 
 			{/* Summary Cards */}
 			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-				<Card className="bg-gradient-to-br from-blue-500/20 to-blue-600/20 border-blue-500/50">
+				<Card className="border">
 					<CardContent className="p-6">
 						<div className="flex justify-between items-start">
 							<div>
-								<p className="text-sm font-medium text-blue-500">
-									Total Vehicles
-								</p>
-								<h3 className="text-3xl font-bold mt-2">{userVehicles}</h3>
+								<p className="text-sm font-medium ">Total Vehicles</p>
+								<h3 className="text-3xl font-bold mt-2">{userVehiclesCount}</h3>
 							</div>
-							<div className="bg-blue-500/20 p-3 rounded-full">
-								<Car className="h-6 w-6 text-blue-500" />
+							<div className="p-3 rounded-full">
+								<Car className="h-6 w-6 " />
 							</div>
 						</div>
 					</CardContent>
@@ -92,7 +110,7 @@ export default function DashboardContent() {
 				value={activeTab}
 				onValueChange={setActiveTab}
 			>
-				<TabsList className="grid max-w-[200px]">
+				<TabsList className="grid max-w-[200px] border">
 					<TabsTrigger value="overview">Overview</TabsTrigger>
 				</TabsList>
 
@@ -105,15 +123,25 @@ export default function DashboardContent() {
 									Manage and monitor your vehicles
 								</CardDescription>
 							</div>
-							<Button variant="outline" onClick={handleViewAllVehicles}>
+							<Button
+								className="btn btn-accent"
+								onClick={handleViewAllVehicles}
+							>
 								View All
 							</Button>
 						</CardHeader>
 						<CardContent>
 							<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-								{vehicles?.map((vehicle) => (
-									<VehicleCard key={vehicle.id} vehicle={vehicle} />
-								))}
+								{userVehicles?.map((item) => {
+									const vehicle = item.vehicle;
+									return (
+										<VehicleCard
+											key={vehicle.id}
+											vehicle={vehicle}
+											isOwner={true}
+										/>
+									);
+								})}
 							</div>
 						</CardContent>
 					</Card>

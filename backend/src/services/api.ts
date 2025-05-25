@@ -31,21 +31,29 @@ class APIService {
 		return userVehicles;
 	}
 
-	public static async addUserVehicle(userId: string, vehicleId: string) {
-		const newUserVehicle = await prismaClient.userVehicles.create({
-			data: {
-				userId,
-				vehicleId,
-			},
-		});
-
-		return newUserVehicle;
+	public static async addUserVehicle(
+		userId: string,
+		vehicleId: string
+	): Promise<boolean> {
+		try {
+			await prismaClient.userVehicles.create({
+				data: {
+					userId,
+					vehicleId,
+				},
+			});
+			return true;
+		} catch (error) {
+			console.error("Failed to add user vehicle:", error);
+			return false;
+		}
 	}
 
 	public static async getUserVehicleCount(userId: string) {
 		const count = await prismaClient.userVehicles.count({
 			where: { userId },
 		});
+		console.log(count);
 		return count;
 	}
 
@@ -69,6 +77,24 @@ class APIService {
 			},
 		});
 		return vehicle;
+	}
+
+	public static async removeUserVehicle(
+		userId: string,
+		vehicleId: string
+	): Promise<boolean> {
+		try {
+			await prismaClient.userVehicles.deleteMany({
+				where: {
+					userId,
+					vehicleId,
+				},
+			});
+			return true;
+		} catch (error) {
+			console.error("Failed to remove user vehicle:", error);
+			return false;
+		}
 	}
 }
 

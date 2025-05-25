@@ -10,6 +10,7 @@ import {
 	signInWithPopup,
 	onAuthStateChanged,
 	signOut,
+	updateProfile,
 } from "firebase/auth";
 import { toast } from "react-hot-toast";
 
@@ -60,20 +61,19 @@ export const FirebaseProvider = ({ children }) => {
 	const profDetails = () => {
 		try {
 			if (user) {
-				const rawDate = user.metadata.creationTime;
-				const dateOnly =
-					rawDate.split(", ")[1].split(" ")[0] +
-					" " +
-					rawDate.split(", ")[1].split(" ")[1] +
-					" " +
-					rawDate.split(", ")[1].split(" ")[2];
-				console.log("user is ", user);
+				const createdAt = user.metadata.creationTime;
+				const createdDate = new Date(createdAt).toDateString();
+
+				const lastLogin = user.metadata.lastSignInTime;
+				const lastLoginDate = new Date(lastLogin).toDateString();
+
 				return {
 					id: user.uid,
 					name: user.displayName,
 					email: user.email,
 					photoURL: user.photoURL,
-					createdAt: dateOnly,
+					createdAt: createdDate,
+					lastLoggedIn: lastLoginDate,
 				};
 			}
 			return null;
@@ -93,6 +93,17 @@ export const FirebaseProvider = ({ children }) => {
 		}
 	};
 
+	const updateUserName = async (newName) => {
+		try {
+			await updateProfile(user, {
+				displayName: newName,
+			});
+			console.log("User name updated successfully!");
+		} catch (error) {
+			console.error("Failed to update user name:", error.message);
+		}
+	};
+
 	return (
 		<FirebaseContext.Provider
 			value={{
@@ -103,6 +114,7 @@ export const FirebaseProvider = ({ children }) => {
 				googleSignIn,
 				profDetails,
 				logOut,
+				updateUserName,
 			}}
 		>
 			{children}

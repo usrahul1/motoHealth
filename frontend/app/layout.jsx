@@ -1,25 +1,26 @@
-import "@/app/globals.css";
+"use client";
+
+import "./globals.css";
 import { Inter } from "next/font/google";
-import { ThemeProvider } from "@/components/theme-provider";
-// import { Toaster } from "@/components/ui/toaster";
 import { FirebaseProvider } from "../context/Firebase";
 import { Toaster } from "react-hot-toast";
+import { useThemeStore } from "@/store/useThemeStore";
 
 const inter = Inter({ subsets: ["latin"] });
 
-export const metadata = {
-	title: "Vehicle Maintenance Dashboard",
-	description: "Track and manage your vehicle maintenance",
-};
+// export const metadata = {
+// 	title: "Vehicle Maintenance Dashboard",
+// 	description: "Track and manage your vehicle maintenance",
+// };
 
 export default function RootLayout({ children }) {
+	const { theme } = useThemeStore();
+
 	return (
-		<html lang="en">
+		<html data-theme={theme} lang="en">
 			<body className={inter.className}>
 				<FirebaseProvider>
-					<ThemeProvider attribute="class" defaultTheme="dark" enableSystem>
-						<main>{children}</main>
-					</ThemeProvider>
+					<main>{children}</main>
 				</FirebaseProvider>
 				<Toaster />
 			</body>

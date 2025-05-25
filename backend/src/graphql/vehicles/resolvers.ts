@@ -42,6 +42,13 @@ const mutations = {
 	) => {
 		return await APIService.addUserVehicle(userId, vehicleId);
 	},
+
+	removeUserVehicle: async (
+		_: any,
+		{ userId, vehicleId }: { userId: string; vehicleId: string }
+	) => {
+		return await APIService.removeUserVehicle(userId, vehicleId);
+	},
 };
 
 export const resolvers = { queries, mutations };

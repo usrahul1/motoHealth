@@ -41,5 +41,8 @@ const mutations = {
     addUserVehicle: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { userId, vehicleId }) {
         return yield api_1.default.addUserVehicle(userId, vehicleId);
     }),
+    removeUserVehicle: (_1, _a) => __awaiter(void 0, [_1, _a], void 0, function* (_, { userId, vehicleId }) {
+        return yield api_1.default.removeUserVehicle(userId, vehicleId);
+    }),
 };
 exports.resolvers = { queries, mutations };

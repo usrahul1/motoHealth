@@ -43,13 +43,19 @@ class APIService {
     }
     static addUserVehicle(userId, vehicleId) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newUserVehicle = yield db_1.prismaClient.userVehicles.create({
-                data: {
-                    userId,
-                    vehicleId,
-                },
-            });
-            return newUserVehicle;
+            try {
+                yield db_1.prismaClient.userVehicles.create({
+                    data: {
+                        userId,
+                        vehicleId,
+                    },
+                });
+                return true;
+            }
+            catch (error) {
+                console.error("Failed to add user vehicle:", error);
+                return false;
+            }
         });
     }
     static getUserVehicleCount(userId) {
@@ -57,6 +63,7 @@ class APIService {
             const count = yield db_1.prismaClient.userVehicles.count({
                 where: { userId },
             });
+            console.log(count);
             return count;
         });
     }
@@ -82,6 +89,23 @@ class APIService {
                 },
             });
             return vehicle;
+        });
+    }
+    static removeUserVehicle(userId, vehicleId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                yield db_1.prismaClient.userVehicles.deleteMany({
+                    where: {
+                        userId,
+                        vehicleId,
+                    },
+                });
+                return true;
+            }
+            catch (error) {
+                console.error("Failed to remove user vehicle:", error);
+                return false;
+            }
         });
     }
 }

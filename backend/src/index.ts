@@ -16,9 +16,10 @@ async function init() {
 			message: "server started bro",
 		});
 	});
+
 	app.use(
 		cors({
-			origin: "https://moto-health.vercel.app/",
+			origin: process.env.FRONTEND,
 			credentials: true,
 		})
 	);

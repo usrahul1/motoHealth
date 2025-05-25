@@ -21,15 +21,16 @@ import { toast } from "react-hot-toast";
 export function UserNav() {
 	const router = useRouter();
 	const firebase = useFirebase();
-	const [profilePic, setProfilePic] = useState(avatar);
+	const [profilePic, setProfilePic] = useState(avatar.src);
 	const [profile, setProfile] = useState(null);
 
 	useEffect(() => {
 		const details = firebase.profDetails();
 		if (details) {
-			console.log("details are: ", details);
 			setProfile(details);
-			if (details.photoURL != null) setProfilePic(details.photoURL);
+			if (details.photoURL && details.photoURL !== "") {
+				setProfilePic(details.photoURL);
+			}
 		}
 	}, [firebase]);
 
@@ -41,40 +42,64 @@ export function UserNav() {
 	return (
 		<DropdownMenu>
 			<DropdownMenuTrigger asChild>
-				<Button variant="ghost" className="relative h-8 w-8 rounded-full">
+				<Button variant="ghost" className="z-10 relative h-8 w-8 rounded-full">
 					<Avatar className="h-8 w-8">
 						<AvatarImage src={profilePic} alt="User" />
 						<AvatarFallback>User</AvatarFallback>
 					</Avatar>
 				</Button>
 			</DropdownMenuTrigger>
-			<DropdownMenuContent className="w-56" align="end" forceMount>
-				<DropdownMenuLabel className="font-normal">
-					<div className="flex flex-col space-y-1">
-						<p className="text-sm font-medium leading-none">
-							{profile?.name || "Loading..."}
-						</p>
-						<p className="text-xs leading-none text-muted-foreground">
-							{profile?.email || "Loading..."}
-						</p>
+
+			<DropdownMenuContent
+				align="end"
+				forceMount
+				className="w-64 p-0 border-none bg-base-100 shadow-xl rounded-box"
+			>
+				{/* DaisyUI Card Starts */}
+				<div className="card bg-base-100">
+					<div className="card-body p-4">
+						<DropdownMenuLabel className="font-normal p-0">
+							<div className="flex flex-col space-y-1">
+								<p className="text-sm font-medium leading-none">
+									{profile?.name || "Loading..."}
+								</p>
+								<p className="text-xs leading-none opacity-70">
+									{profile?.email || "Loading..."}
+								</p>
+							</div>
+						</DropdownMenuLabel>
+
+						<DropdownMenuSeparator />
+
+						<DropdownMenuGroup>
+							<DropdownMenuItem
+								className="hover:bg-base-200 rounded-md"
+								onClick={() => router.push("/profile")}
+							>
+								<User className="mr-2 h-4 w-4" />
+								Profile
+							</DropdownMenuItem>
+							<DropdownMenuItem
+								className="hover:bg-base-200 rounded-md"
+								onClick={() => router.push("/dashboard/settings")}
+							>
+								<Settings className="mr-2 h-4 w-4" />
+								Settings
+							</DropdownMenuItem>
+						</DropdownMenuGroup>
+
+						<DropdownMenuSeparator />
+
+						<DropdownMenuItem
+							className="hover:bg-base-200 rounded-md"
+							onClick={() => logOutHandler()}
+						>
+							<LogOut className="mr-2 h-4 w-4" />
+							<span>Log out</span>
+						</DropdownMenuItem>
 					</div>
-				</DropdownMenuLabel>
-				<DropdownMenuSeparator />
-				<DropdownMenuGroup>
-					<DropdownMenuItem onClick={() => router.push("/profile")}>
-						<User className="mr-2 h-4 w-4" />
-						<span>Profile</span>
-					</DropdownMenuItem>
-					<DropdownMenuItem onClick={() => router.push("/dashboard/settings")}>
-						<Settings className="mr-2 h-4 w-4" />
-						<span>Settings</span>
-					</DropdownMenuItem>
-				</DropdownMenuGroup>
-				<DropdownMenuSeparator />
-				<DropdownMenuItem onClick={() => logOutHandler()}>
-					<LogOut className="mr-2 h-4 w-4" />
-					<span>Log out</span>
-				</DropdownMenuItem>
+				</div>
+				{/* DaisyUI Card Ends */}
 			</DropdownMenuContent>
 		</DropdownMenu>
 	);
