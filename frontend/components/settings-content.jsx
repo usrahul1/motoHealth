@@ -28,86 +28,10 @@ import {
 	MessageSquare,
 	BellOff,
 } from "lucide-react";
-import { useFirebase } from "@/context/Firebase";
-import avatar from "../public/images/profile-avatar.jpg";
 import { useThemeStore } from "../store/useThemeStore";
 
 export default function SettingsContent() {
-	const { toast } = useToast();
-	const [isSubmitting, setIsSubmitting] = useState(false);
-	const [profilePic, setProfilePic] = useState(avatar);
-	const [profile, setProfile] = useState(null);
-	const firebase = useFirebase();
 	const { theme, setTheme } = useThemeStore();
-
-	useEffect(() => {
-		const details = firebase.profDetails();
-		if (details) {
-			console.log("details are: ", details);
-			setProfile(details);
-			if (details.photoURL != null) setProfilePic(details.photoURL);
-		}
-	}, [firebase]);
-
-	const [settings, setSettings] = useState({
-		// Notification settings
-		emailNotifications: true,
-		pushNotifications: false,
-		maintenanceReminders: true,
-		serviceAlerts: true,
-		weeklyReports: false,
-
-		// Appearance settings
-		theme: "dark",
-		colorScheme: "blue",
-		reducedMotion: false,
-
-		// Privacy settings
-		dataSharing: false,
-		locationTracking: true,
-		analytics: true,
-
-		// Account settings
-		email: "alex.johnson@example.com",
-		phone: "+1 (555) 123-4567",
-		language: "english",
-		timezone: "America/Los_Angeles",
-	});
-
-	const handleSwitchChange = (name) => {
-		setSettings({
-			...settings,
-			[name]: !settings[name],
-		});
-	};
-
-	const handleInputChange = (e) => {
-		const { name, value } = e.target;
-		setSettings({
-			...settings,
-			[name]: value,
-		});
-	};
-
-	const handleRadioChange = (name, value) => {
-		setSettings({
-			...settings,
-			[name]: value,
-		});
-	};
-
-	const handleSaveSettings = (section) => {
-		setIsSubmitting(true);
-
-		// Simulate API call
-		setTimeout(() => {
-			setIsSubmitting(false);
-			toast({
-				title: "Settings Updated",
-				description: `Your ${section} settings have been updated successfully.`,
-			});
-		}, 1000);
-	};
 
 	return (
 		<div className="container mx-auto p-4 space-y-6">
@@ -135,44 +59,7 @@ export default function SettingsContent() {
 							<div className="space-y-4">
 								<div>
 									<h4 className="font-medium mb-3">Theme Mode</h4>
-									{/* <div className="grid grid-cols-3 gap-4">
-										<div
-											className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center ${
-												settings.theme === "light"
-													? "border-primary bg-primary/10"
-													: "border-border"
-											}`}
-											onClick={() => handleRadioChange("theme", "light")}
-										>
-											<Sun className="h-8 w-8 mb-2" />
-											<span>Light</span>
-										</div>
-										<div
-											className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center ${
-												settings.theme === "dark"
-													? "border-primary bg-primary/10"
-													: "border-border"
-											}`}
-											onClick={() => handleRadioChange("theme", "dark")}
-										>
-											<Moon className="h-8 w-8 mb-2" />
-											<span>Dark</span>
-										</div>
-										<div
-											className={`border rounded-lg p-4 cursor-pointer flex flex-col items-center ${
-												settings.theme === "system"
-													? "border-primary bg-primary/10"
-													: "border-border"
-											}`}
-											onClick={() => handleRadioChange("theme", "system")}
-										>
-											<div className="flex h-8 mb-2">
-												<Sun className="h-8 w-8" />
-												<Moon className="h-8 w-8" />
-											</div>
-											<span>System</span>
-										</div>
-									</div> */}
+
 									<div className="grid grid-cols-4 sm:grid-cols-6 md:grid-cols-8 gap-2">
 										{THEMES.map((t) => (
 											<button

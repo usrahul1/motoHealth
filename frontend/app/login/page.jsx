@@ -12,14 +12,13 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { useToast } from "@/components/ui/use-toast";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useFirebase } from "@/context/Firebase";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
 	const firebase = useFirebase();
-	const { toast } = useToast();
 	const router = useRouter();
 	const [isLoading, setIsLoading] = useState(false);
 	const [formData, setFormData] = useState({
@@ -37,13 +36,16 @@ export default function LoginPage() {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const res = await firebase.signInUser(email, pass);
+		const res = await firebase.signInUser(formData.email, formData.password);
 		console.log("success", res);
 	};
 
 	useEffect(() => {
 		if (firebase.isLoggedIn) {
-			router.push("/dashboard");
+			toast.success("Logging in!");
+			setTimeout(() => {
+				router.push("/dashboard");
+			}, 2000);
 		}
 	}, [firebase, router]);
 

@@ -14,48 +14,45 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import VehicleCard from "./vehicle-card";
 import { Search, Filter, Plus } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { fetchAllVehicles } from "@/api/RequestMaker";
-import { fetchUserVehicles } from "@/api/RequestMaker";
-import { useFirebase } from "@/context/Firebase";
 
-export default function VehiclesContent() {
+export default function VehiclesContent({ allVehicles, userVehicles }) {
 	const router = useRouter();
-	const firebase = useFirebase();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filterMake, setFilterMake] = useState("All");
 	const [filterYear, setFilterYear] = useState("All");
+
 	const [visibleVehicles, setVisibleVehicles] = useState(8);
-	const [allVehicles, setAllVehicles] = useState([]);
+	// const [allVehicles, setAllVehicles] = useState([]);
 	const [filteredVehicles, setFilteredVehicles] = useState([]);
-	const [userVehicles, setUserVehicles] = useState([]);
+	// const [userVehicles, setUserVehicles] = useState([]);
 	const [profile, setProfile] = useState(null);
 
-	useEffect(() => {
-		fetchAllVehicles().then(setAllVehicles);
-	}, []);
+	// useEffect(() => {
+	// 	fetchAllVehicles().then(setAllVehicles);
+	// }, []);
 
 	useEffect(() => {
 		setFilteredVehicles(allVehicles);
 	}, [allVehicles]);
 
-	useEffect(() => {
-		const details = firebase.profDetails();
-		if (details) {
-			console.log("details are: ", details);
-			setProfile(details);
-		}
-	}, [firebase]);
+	// useEffect(() => {
+	// 	const details = firebase.profDetails();
+	// 	if (details) {
+	// 		console.log("details are: ", details);
+	// 		setProfile(details);
+	// 	}
+	// }, [firebase]);
 
-	useEffect(() => {
-		const getVehicles = async () => {
-			const vehicles = await fetchUserVehicles(profile?.id);
-			setUserVehicles(vehicles);
-		};
+	// useEffect(() => {
+	// 	const getVehicles = async () => {
+	// 		const vehicles = await fetchUserVehicles(profile?.id);
+	// 		setUserVehicles(vehicles);
+	// 	};
 
-		if (profile?.id) {
-			getVehicles();
-		}
-	}, [profile?.id]);
+	// 	if (profile?.id) {
+	// 		getVehicles();
+	// 	}
+	// }, [profile?.id]);
 
 	useEffect(() => {
 		let result = allVehicles;

@@ -12,9 +12,17 @@ import {
 	signOut,
 	updateProfile,
 } from "firebase/auth";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { toast } from "react-hot-toast";
+import {
+	getFirestore,
+	setDoc,
+	doc,
+	getDoc,
+	addDoc,
+	Timestamp,
+} from "firebase/firestore";
 
-// Firebase config
 const firebaseConfig = {
 	apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
 	authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
@@ -24,15 +32,14 @@ const firebaseConfig = {
 	appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase
 const firebaseApp = initializeApp(firebaseConfig);
 const firebaseAuth = getAuth(firebaseApp);
 const googleProvider = new GoogleAuthProvider();
+const storage = getStorage(firebaseApp);
+const db = getFirestore(firebaseApp);
 
-// Create context
 const FirebaseContext = createContext(null);
 
-// Provider component
 export const FirebaseProvider = ({ children }) => {
 	const [user, setUser] = useState(null);
 
@@ -45,11 +52,25 @@ export const FirebaseProvider = ({ children }) => {
 		});
 	}, []);
 
-	// Auth functions
-	const signUpUser = async (email, password) => {
-		return await createUserWithEmailAndPassword(firebaseAuth, email, password);
-	};
+	const signUpUser = async (email, password, name) => {
+		try {
+			const userCredential = await createUserWithEmailAndPassword(
+				firebaseAuth,
+				email,
+				password
+			);
+			const user = userCredential.user;
 
+			// Set the user's display name
+			await updateProfile(user, {
+				displayName: name,
+			});
+
+			return user; // Optional: return updated user object
+		} catch (error) {
+			throw error;
+		}
+	};
 	const signInUser = async (email, password) => {
 		return await signInWithEmailAndPassword(firebaseAuth, email, password);
 	};
@@ -104,6 +125,74 @@ export const FirebaseProvider = ({ children }) => {
 		}
 	};
 
+	const profilePicUpload = async (file) => {
+		try {
+			if (!file) throw new Error("File missing");
+
+			const allowedTypes = ["image/png", "image/jpeg"];
+			if (!allowedTypes.includes(file.type)) {
+				throw new Error("Only PNG and JPG images are allowed");
+			}
+
+			if (!user) throw new Error("User not authenticated");
+
+			const storageRef = ref(
+				storage,
+				`profile_pictures/${user.uid}/${Date.now()}_${file.name}`
+			);
+
+			const snapshot = await uploadBytes(storageRef, file);
+			const downloadURL = await getDownloadURL(snapshot.ref);
+			await updateProfile(user, {
+				photoURL: downloadURL,
+			});
+			return true;
+		} catch (error) {
+			console.error("Upload failed:", error);
+			toast.error(`Upload failed: ${error.message}`);
+			return false;
+		}
+	};
+
+	const createOrUpdateUserDetails = async (gender, phone) => {
+		try {
+			if (!user) throw new Error("User not authenticated");
+
+			const userDocRef = doc(db, "userDetails", user.uid);
+
+			await setDoc(
+				userDocRef,
+				{
+					gender,
+					phone,
+					updatedAt: Timestamp.fromDate(new Date()),
+				},
+				{ merge: true }
+			);
+
+			console.log("User details created/updated successfully!");
+		} catch (error) {
+			console.error("Error creating/updating user details:", error);
+		}
+	};
+
+	const fetchUserDetails = async () => {
+		try {
+			const userDocRef = doc(db, "userDetails", user.uid);
+			const docSnap = await getDoc(userDocRef);
+
+			if (docSnap.exists()) {
+				return docSnap.data();
+			} else {
+				console.log("No user details found");
+				return null;
+			}
+		} catch (error) {
+			console.error("Error fetching user details:", error);
+			return null;
+		}
+	};
+
 	return (
 		<FirebaseContext.Provider
 			value={{
@@ -115,6 +204,9 @@ export const FirebaseProvider = ({ children }) => {
 				profDetails,
 				logOut,
 				updateUserName,
+				profilePicUpload,
+				createOrUpdateUserDetails,
+				fetchUserDetails,
 			}}
 		>
 			{children}

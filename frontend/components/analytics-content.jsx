@@ -1,6 +1,5 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
 	Card,
 	CardContent,
@@ -9,15 +8,8 @@ import {
 	CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import {
-	Select,
-	SelectContent,
-	SelectItem,
-	SelectTrigger,
-	SelectValue,
-} from "@/components/ui/select";
+
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
 	Popover,
 	PopoverContent,
@@ -35,23 +27,15 @@ import {
 	Wrench,
 	DollarSign,
 } from "lucide-react";
-import MaintenanceChart from "./maintenance-chart";
-import CostTrendChart from "./cost-trend-chart";
-import FuelEfficiencyChart from "./fuel-efficiency-chart";
-import VehicleComparisonChart from "./vehicle-comparison-chart";
-import MaintenanceTypeChart from "./maintenance-type-chart";
-import { useFirebase } from "@/context/Firebase";
-import { fetchUserVehicleCount } from "@/api/RequestMaker";
-import { fetchUserVehiclePrices } from "@/api/RequestMaker";
-import { fetchUserElectricCount } from "@/api/RequestMaker";
-import { fetchUserVehicleDetailsWithSpecs } from "@/api/RequestMaker";
 
-export default function AnalyticsContent() {
-	const firebase = useFirebase();
-	const [userVehiclesCount, setUserVehiclesCount] = useState(0);
-	const [userElectricVehiclesCount, setElectricUserVehiclesCount] = useState(0);
-	const [profile, setProfile] = useState(null);
-	const [totalVehiclePrice, setTotalVehiclePrice] = useState(0);
+import VehicleComparisonChart from "./vehicle-comparison-chart";
+
+export default function AnalyticsContent({
+	userVehiclesCount,
+	userElectricVehiclesCount,
+	totalVehiclePrice,
+	userVehicles,
+}) {
 	const colors = [
 		"bg-blue-500",
 		"bg-green-500",
@@ -59,64 +43,6 @@ export default function AnalyticsContent() {
 		"bg-yellow-500",
 		"bg-red-500",
 	];
-
-	const [userVehicles, setUserVehicles] = useState([]);
-
-	useEffect(() => {
-		const details = firebase.profDetails();
-		if (details) {
-			setProfile(details);
-		}
-	}, [firebase]);
-
-	useEffect(() => {
-		const fetchVehicles = async () => {
-			try {
-				const data = await fetchUserVehicleDetailsWithSpecs(profile?.id);
-				setUserVehicles(data);
-			} catch (err) {
-				console.error(err);
-			}
-		};
-
-		fetchVehicles();
-	}, [profile?.id]);
-
-	useEffect(() => {
-		const getUserVehicleStats = async () => {
-			if (profile?.id) {
-				try {
-					const count = await fetchUserVehicleCount(profile.id);
-					setUserVehiclesCount(count);
-					const electricCount = await fetchUserElectricCount(profile.id);
-					setElectricUserVehiclesCount(electricCount);
-				} catch (error) {
-					console.error("Error fetching user vehicle data:", error);
-				}
-			}
-		};
-
-		getUserVehicleStats();
-	}, [profile?.id]);
-
-	useEffect(() => {
-		const getTotalVehiclePrice = async () => {
-			if (profile?.id) {
-				try {
-					const vehicles = await fetchUserVehiclePrices(profile.id);
-					const total = vehicles.reduce(
-						(sum, v) => sum + (v.vehicle.price || 0),
-						0
-					);
-					setTotalVehiclePrice(total);
-				} catch (error) {
-					console.error("Error fetching user vehicle prices:", error);
-				}
-			}
-		};
-
-		getTotalVehiclePrice();
-	}, [profile?.id]);
 
 	return (
 		<div className="container mx-auto p-4 space-y-6">

@@ -11,74 +11,20 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
-import {
-	Car,
-	Gauge,
-	Wrench,
-	Calendar,
-	AlertTriangle,
-	BarChart3,
-	ArrowRight,
-	Plus,
-} from "lucide-react";
+import { Car } from "lucide-react";
 import VehicleCard from "./vehicle-card";
-import MaintenanceChart from "./maintenance-chart";
-import CostTrendChart from "./cost-trend-chart";
-import { fetchUserVehicleCount } from "../api/RequestMaker";
-import { useFirebase } from "@/context/Firebase";
-import { fetchUserVehicleDetails } from "../api/RequestMaker";
 
-export default function DashboardContent() {
+export default function DashboardContent({
+	profile,
+	userVehicles,
+	userVehiclesCount,
+}) {
 	const router = useRouter();
-	const firebase = useFirebase();
 	const [activeTab, setActiveTab] = useState("overview");
-	const [profile, setProfile] = useState(null);
-	const [userVehiclesCount, setUserVehiclesCount] = useState(0);
-	const [userVehicles, setUserVehicles] = useState([]);
-
-	useEffect(() => {
-		const details = firebase.profDetails();
-		if (details) {
-			setProfile(details);
-		}
-	}, [firebase]);
-
-	useEffect(() => {
-		const getUserVehicleCount = async () => {
-			if (profile?.id) {
-				try {
-					const count = await fetchUserVehicleCount(profile.id);
-					setUserVehiclesCount(count);
-				} catch (error) {
-					console.error("Error fetching user vehicle count:", error);
-				}
-			}
-		};
-
-		getUserVehicleCount();
-	}, [profile?.id]);
-
-	useEffect(() => {
-		const getUserVehicles = async () => {
-			if (!profile?.id) return;
-
-			const vehicles = await fetchUserVehicleDetails(profile?.id);
-			setUserVehicles(vehicles);
-		};
-
-		getUserVehicles();
-	}, [profile?.id]);
+	// const [profile, setProfile] = useState(null);
 
 	const handleViewAllVehicles = () => {
-		router.push("/dashboard/vehicles");
-	};
-
-	const handleAddVehicle = () => {
-		router.push("/dashboard/add-vehicle");
-	};
-
-	const handleViewAnalytics = () => {
-		router.push("/dashboard/analytics");
+		router.push("/dashboard/profile");
 	};
 
 	return (

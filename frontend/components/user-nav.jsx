@@ -74,7 +74,7 @@ export function UserNav() {
 						<DropdownMenuGroup>
 							<DropdownMenuItem
 								className="hover:bg-base-200 rounded-md"
-								onClick={() => router.push("/profile")}
+								onClick={() => router.push("/dashboard/profile")}
 							>
 								<User className="mr-2 h-4 w-4" />
 								Profile

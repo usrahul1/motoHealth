@@ -13,98 +13,27 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-// import { useToast } from "@/components/ui/use-toast";
 import { toast } from "react-hot-toast";
 import VehicleCard from "./vehicle-card";
-import { useRouter } from "next/navigation";
 import { useFirebase } from "@/context/Firebase";
-import avatar from "../public/images/profile-avatar.jpg";
-import { fetchUserVehicleCount } from "@/api/RequestMaker";
-import { fetchUserVehicleDetails } from "@/api/RequestMaker";
 
-const vehicles = [
-	{
-		id: 1,
-		make: "Tesla",
-		model: "Model 3",
-		year: 2023,
-		image: "/images/tesla-model3.jpg",
-		status: "Excellent",
-		lastService: "2023-04-15",
-		mileage: 12500,
-		fuelLevel: 90,
-		batteryHealth: 95,
-	},
-	{
-		id: 2,
-		make: "Toyota",
-		model: "Camry",
-		year: 2022,
-		image: "/images/toyota-camry.jpg",
-		status: "Good",
-		lastService: "2023-02-10",
-		mileage: 18700,
-		fuelLevel: 65,
-		batteryHealth: 88,
-	},
-	{
-		id: 3,
-		make: "BMW",
-		model: "X5",
-		year: 2021,
-		image: "/images/bmw-x5.jpg",
-		status: "Good",
-		lastService: "2023-01-05",
-		mileage: 25400,
-		fuelLevel: 45,
-		batteryHealth: 82,
-	},
-];
-
-export default function ProfilePage() {
+export default function ProfilePage({
+	profile,
+	userVehicles,
+	userVehiclesCount,
+	name,
+	profilePic,
+	phone,
+	gender,
+}) {
 	const firebase = useFirebase();
-	const [profilePic, setProfilePic] = useState(avatar);
-	const [profile, setProfile] = useState(null);
-	const router = useRouter();
-	const [name, setName] = useState("");
-	const [userVehiclesCount, setUserVehiclesCount] = useState(0);
-	const [userVehicles, setUserVehicles] = useState([]);
+	const [nameUser, setName] = useState(name);
 
-	useEffect(() => {
-		const details = firebase.profDetails();
-		if (details) {
-			console.log("details are: ", details);
-			setProfile(details);
-			setName(details?.name);
-			if (details.photoURL != null) setProfilePic(details.photoURL);
-		}
-	}, [firebase]);
-
-	useEffect(() => {
-		const getUserVehicleCount = async () => {
-			if (profile?.id) {
-				try {
-					const count = await fetchUserVehicleCount(profile.id);
-					setUserVehiclesCount(count);
-				} catch (error) {
-					console.error("Error fetching user vehicle count:", error);
-				}
-			}
-		};
-
-		getUserVehicleCount();
-	}, [profile?.id]);
-
-	useEffect(() => {
-		const getUserVehicles = async () => {
-			if (!profile?.id) return;
-
-			const vehicles = await fetchUserVehicleDetails(profile?.id);
-			setUserVehicles(vehicles);
-		};
-
-		getUserVehicles();
-	}, [profile?.id]);
+	const [selectedFile, setSelectedFile] = useState(null);
+	const [isUploading, setIsUploading] = useState(false);
+	const [wantToUpload, setWantToUpload] = useState(false);
+	const [phoneNumber, setPhone] = useState(phone);
+	const [genderUser, setGender] = useState(gender);
 
 	const handleSaveName = async () => {
 		try {
@@ -116,10 +45,55 @@ export default function ProfilePage() {
 		}
 	};
 
+	const handleSubmit = async (e) => {
+		e.preventDefault();
+		if (!profile) {
+			toast.error("User not logged in");
+			return;
+		}
+		if (!name || !gender || !phone) {
+			toast.error("All details required!");
+		}
+		try {
+			await handleSaveName();
+			await firebase.createOrUpdateUserDetails(genderUser, phoneNumber);
+			toast.success("Details saved!");
+		} catch (error) {
+			toast.error("Failed to save details");
+		}
+	};
+
+	const handleFileChange = (e) => {
+		const file = e.target.files[0];
+		if (file) setSelectedFile(file);
+	};
+
+	const handleProfilePicUpload = async (e) => {
+		e.preventDefault();
+		if (!selectedFile) {
+			toast.error("Please select a file first.");
+			return;
+		}
+
+		setIsUploading(true);
+		const success = await firebase.profilePicUpload(selectedFile);
+		setIsUploading(false);
+
+		if (success) {
+			toast.success("Profile picture updated successfully!");
+			setSelectedFile(null);
+			setTimeout(() => {
+				window.location.reload();
+			}, 1500);
+		} else {
+			toast.error("Oops!");
+		}
+	};
+
 	return (
 		<div className="container mx-auto p-4 space-y-6">
 			<div className="flex flex-col md:flex-row gap-6 items-start">
-				<div className="card w-full md:w-1/3 flex flex-col items-center p-6 rounded-xl shadow-lg bg-base-200 text-base-content">
+				<div className="card w-full md:w-1/3 flex flex-col items-center p-6 rounded-xl shadow-lg bg-base-200 text-base-content border-5 border-white">
 					<Avatar className="card-title w-32 h-32 border-4 border-primary">
 						<AvatarImage src={profilePic} alt="User" />
 						<AvatarFallback>User</AvatarFallback>
@@ -128,7 +102,7 @@ export default function ProfilePage() {
 						{profile?.name || "Loading..."}
 					</h2>
 					<p>{profile?.email || "Loading..."}</p>
-					<div className="mt-6 w-full">
+					<div className="mt-6 w-full flex flex-col gap-2">
 						<div className="flex justify-between mb-2">
 							<span>Member since</span>
 							<span>{profile?.createdAt || "Loading..."}</span>
@@ -141,6 +115,39 @@ export default function ProfilePage() {
 							<span>Last login</span>
 							<span>{profile?.lastLoggedIn || "Loading..."}</span>
 						</div>
+
+						{wantToUpload && (
+							<div className="flex flex-col gap-2 lg:flex-row justify-between mb-2">
+								<input
+									type="file"
+									accept="image/png, image/jpeg"
+									onChange={handleFileChange}
+									className="md:w-auto text-sm 
+                 file:mr-4 file:py-2 file:px-4
+                 file:rounded-md file:border-0
+                 file:text-sm file:font-semibold
+                 file:bg-primary 
+                 hover:file:bg-primary-dark
+                 cursor-pointer"
+								/>
+								<button
+									onClick={handleProfilePicUpload}
+									className="btn btn-primary rounded w-full md:w-auto"
+									disabled={isUploading}
+								>
+									{isUploading ? "Uploading..." : "Upload"}
+								</button>
+							</div>
+						)}
+
+						{!wantToUpload && (
+							<Button
+								onClick={() => setWantToUpload(!wantToUpload)}
+								className="w-full md:w-auto btn btn-primary"
+							>
+								Edit your profile picture
+							</Button>
+						)}
 					</div>
 				</div>
 
@@ -176,7 +183,7 @@ export default function ProfilePage() {
 											<Input
 												id="name"
 												name="name"
-												value={name}
+												value={nameUser}
 												onChange={(e) => setName(e.target.value)}
 											/>
 										</div>
@@ -187,12 +194,37 @@ export default function ProfilePage() {
 												name="email"
 												type="email"
 												value={profile?.email || "Loading..."}
-												readonly
+												readOnly
 											/>
+										</div>
+										<div className="space-y-2">
+											<Label htmlFor="phone">Phone Number</Label>
+											<Input
+												id="phone"
+												name="phone"
+												value={phoneNumber}
+												onChange={(e) => setPhone(e.target.value)}
+											/>
+										</div>
+
+										<div className="space-y-2">
+											<Label htmlFor="gender">Gender</Label>
+											<select
+												id="gender"
+												name="gender"
+												value={genderUser}
+												onChange={(e) => setGender(e.target.value)}
+												className="w-full rounded border px-3 py-2"
+											>
+												<option value="">Select Gender</option>
+												<option value="Male">Male</option>
+												<option value="Female">Female</option>
+												<option value="Other">Other</option>
+											</select>
 										</div>
 									</div>
 									<Button
-										onClick={handleSaveName}
+										onClick={handleSubmit}
 										className="w-full md:w-auto btn btn-primary"
 									>
 										Save Changes
