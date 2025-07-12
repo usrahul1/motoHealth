@@ -94,4 +94,4 @@ FRONTEND=http://localhost:5173
 Made with ❤️ by  
 
 - [Sai Rahul Urumu](https://www.linkedin.com/in/usrahul) – Backend & Integration with Frontend
-- [Karthikeya Sriram](https://www.linkedin.com/in/trineshch/) – Frontend & UI/UX  
+- [Trinesh Chintanippu](https://www.linkedin.com/in/trineshch/) – Frontend & UI/UX  
